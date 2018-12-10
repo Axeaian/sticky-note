@@ -21,10 +21,20 @@ button {
 .sticky {
   background-color: yellow;
   padding: 20px;
+  position: relative;
 }
 
 .title {
   font-size: 1.5rem;
   font: bolder;
   padding-bottom: 20px;
+}
+.cross {
+  position: absolute;
+  color: red;
+  padding: 5px;
+  margin: 10px;
+  top: 0;
+  right: 0;
+  border: 1px solid red;
 }

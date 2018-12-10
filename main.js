@@ -7,6 +7,7 @@ let state = "save";
 let stateIndicator = document.getElementById("state");
 let editB = document.getElementById("edit");
 let addB = document.getElementById("add");
+let deleteB = document.getElementById("delete");
 let saveB = document.getElementById("save");
 
 //load sticky
@@ -53,7 +54,7 @@ function edit() {
 }
 
 //to add sticky
-function add() {
+function addItem() {
   if (state === "save" || state === "add") {
     if (db.length > 0 && db[0].title === "" && db[0].content === "") {
       alert("Please use empty sticky first");
@@ -77,6 +78,44 @@ function add() {
   }
 }
 
+function deleteItem() {
+  if (state === "save" || state === "delete") {
+    state = "delete";
+    stateIndicator.innerText = state;
+    let stickies = document.getElementsByClassName("sticky");
+    for (let i = 0; i < stickies.length; i++) {
+      let node = document.createElement("span");
+      node.setAttribute("class", "cross");
+      node.innerText = "X";
+      stickies[i].appendChild(node);
+      node.addEventListener("click", function() {
+        node.parentNode.remove();
+      });
+    }
+  } else {
+    alert("Please save to continue");
+  }
+}
+
+function reloadDB() {
+  let pArray = document.querySelectorAll("p");
+  console.log(pArray);
+  let dblength = db.length;
+  for (i = 0; i < dblength * 2; i++) {
+    if (i < pArray.length) {
+      if (i % 2 === 0) {
+        db[i / 2].title = pArray[i].innerText;
+      } else {
+        db[i / 2 - 0.5].content = pArray[i].innerText;
+      }
+    } else {
+      if (i % 2 === 0) {
+        db.pop();
+      }
+    }
+  }
+}
+
 //to save sticky
 function save() {
   if (state === "edit" || state === "add") {
@@ -87,15 +126,33 @@ function save() {
     editB.innerText = "Edit";
     state = "save";
     stateIndicator.innerText = state;
+    reloadDB();
+    console.log(db);
+  }
+  if (state === "delete") {
+    let stickies = document.getElementsByClassName("sticky");
+    for (let i = 0; i < stickies.length; i++) {
+      let cross = document.getElementsByClassName("cross");
+      for (let i = 0; i < cross.length; i++) {
+        cross[i].remove();
+      }
+    }
+    state = "save";
+    stateIndicator.innerText = state;
+    reloadDB();
+    console.log(db);
   }
 }
-
 editB.addEventListener("click", function() {
   edit();
 });
 
 addB.addEventListener("click", function() {
-  add();
+  addItem();
+});
+
+deleteB.addEventListener("click", function() {
+  deleteItem();
 });
 saveB.addEventListener("click", function() {
   save();
