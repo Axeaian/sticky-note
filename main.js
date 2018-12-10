@@ -1,14 +1,19 @@
-db = [
+let db = [
   { title: "Hello World!", content: "First sticky test" },
   { title: "Second Sticky", content: "Let's see how it looks" }
 ];
+
+let hidden = [];
 
 let state = "save";
 let stateIndicator = document.getElementById("state");
 let editB = document.getElementById("edit");
 let addB = document.getElementById("add");
 let deleteB = document.getElementById("delete");
+let filterB = document.getElementById("filter");
+let clearB = document.getElementById("clear");
 let saveB = document.getElementById("save");
+let userInput = document.querySelector("input");
 
 //load sticky
 function load(note) {
@@ -143,6 +148,44 @@ function save() {
     console.log(db);
   }
 }
+
+function filter() {
+  let stickies = document.getElementsByClassName("sticky");
+  while (stickies.length > 0) {
+    stickies[0].remove();
+  }
+  let filter = [];
+  hidden = [];
+  for (let i = 0; i < db.length; i++) {
+    if (db[i].title.indexOf(userInput.value) > -1) {
+      filter.push(db[i]);
+    } else {
+      hidden.push(db[i]);
+    }
+  }
+  filter.forEach(function(sticky) {
+    load(sticky);
+  });
+}
+
+function reset() {
+  reloadDB();
+  userInput.value = "";
+  if (hidden.length > 0) {
+    for (let i = 0; i < hidden.length; i++) {
+      db.push(hidden[i]);
+    }
+    hidden = [];
+  }
+  let stickies = document.getElementsByClassName("sticky");
+  while (stickies.length > 0) {
+    stickies[0].remove();
+  }
+  db.forEach(function(sticky) {
+    load(sticky);
+  });
+}
+
 editB.addEventListener("click", function() {
   edit();
 });
@@ -156,4 +199,12 @@ deleteB.addEventListener("click", function() {
 });
 saveB.addEventListener("click", function() {
   save();
+});
+
+filterB.addEventListener("click", function() {
+  filter();
+});
+
+clearB.addEventListener("click", function() {
+  reset();
 });
